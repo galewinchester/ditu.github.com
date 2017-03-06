@@ -1,39 +1,44 @@
-<!DOCTYPE html>
-<head>
-<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-<title></title>
-<script type="text/javascript" src=http://maps.google.com/maps/api/js?sensor=false></script>
-<script type="text/javascript">
-  function init() {
-    // 取得当前地理位置
-    navigator.geolocation.getCurrentPosition(function(position) {
-        var coords = position.coords;
-        //设定地图参数，将用户的当前位置的纬度、经度设定为地图的中心点。
-        var latlng = new google.maps.LatLng(coords.latitude, coords.longitude);
-        var myOptions = {
-          zoom: 14,
-          center: latlng,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-        //创建地图并在“map”div中显示
-        var map1; 
-        map1= new google.maps.Map(document.getElementById("map"), myOptions);
-        //在地图上创建标记
-        var marker = new google.maps.Marker({
-            position: latlng,
-            map: map1
-        });
-        //设定标注窗口，并指定该窗口中的注释文字
-        var infowindow = new google.maps.InfoWindow({
-          content: "当前位置!"
-        });
-        //打开标注窗口
-        infowindow.open(map1, marker);
-    });
-  }
-</script>
-</head>
-<body onload="init()">
-  <div id="map" style="width:400px; height:400px"></div>
-</body>
 
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<style type="text/css">
+		body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;font-family:"微软雅黑";}
+	</style>
+	<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=WPdKg68QxFSrj7bogkxwDAjwNFbOMZdg"></script>
+	<title>浏览器定位</title>
+</head>
+<body>
+	<div id="allmap"></div>
+</body>
+</html>
+<script type="text/javascript">
+	// 百度地图API功能
+	var map = new BMap.Map("allmap");
+	var point = new BMap.Point(116.331398,39.897445);
+	map.centerAndZoom(point,12);
+
+	var geolocation = new BMap.Geolocation();
+	geolocation.getCurrentPosition(function(r){
+		if(this.getStatus() == BMAP_STATUS_SUCCESS){
+			var mk = new BMap.Marker(r.point);
+			map.addOverlay(mk);
+			map.panTo(r.point);
+			alert('您的位置：'+r.point.lng+','+r.point.lat);
+		}
+		else {
+			alert('failed'+this.getStatus());
+		}        
+	},{enableHighAccuracy: true})
+	//关于状态码
+	//BMAP_STATUS_SUCCESS	检索成功。对应数值“0”。
+	//BMAP_STATUS_CITY_LIST	城市列表。对应数值“1”。
+	//BMAP_STATUS_UNKNOWN_LOCATION	位置结果未知。对应数值“2”。
+	//BMAP_STATUS_UNKNOWN_ROUTE	导航结果未知。对应数值“3”。
+	//BMAP_STATUS_INVALID_KEY	非法密钥。对应数值“4”。
+	//BMAP_STATUS_INVALID_REQUEST	非法请求。对应数值“5”。
+	//BMAP_STATUS_PERMISSION_DENIED	没有权限。对应数值“6”。(自 1.1 新增)
+	//BMAP_STATUS_SERVICE_UNAVAILABLE	服务不可用。对应数值“7”。(自 1.1 新增)
+	//BMAP_STATUS_TIMEOUT	超时。对应数值“8”。(自 1.1 新增)
+</script>
